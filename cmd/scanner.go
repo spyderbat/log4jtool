@@ -232,7 +232,7 @@ func match_map(input string, expr *regexp.Regexp) map[string]string {
 
 func scan_release_version(mf string) string {
 	ver_reg := regexp.MustCompile(".+ReleaseVersion\\: (?P<version>\\S+).+")
-	old_ver_reg := regexp.MustCompile(".+Implementation\\-Version\\: (?P<version>\\\\S+).+")
+	old_ver_reg := regexp.MustCompile(".*Implementation\\-Version\\: (?P<version>\\S+)")
 	m := match_map(ver_reg.FindString(mf), ver_reg)
 	if len(m) == 0 {
 		m = match_map(old_ver_reg.FindString(mf), old_ver_reg)
