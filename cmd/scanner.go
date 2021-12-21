@@ -38,6 +38,7 @@ var counter = uint64(0)
 
 // Jar finder pattern
 var zipPattern = regexp.MustCompile("log4j.+\\.jar")
+var found_output = false
 
 type Log4JFound struct {
 	File       string `json:"file,omitempty"`
@@ -75,6 +76,9 @@ func main() {
 		select {
 		case f := <-fileChannel:
 			if f == "" {
+				if !found_output {
+					fmt.Println("Did not find any Log4j instances.")
+				}
 				os.Exit(0)
 			}
 			scan_file(f)
@@ -114,7 +118,6 @@ func scan_for_files(p string, out chan string) []string {
 }
 
 func scan_file(fn string) {
-
 	// Check to see if we have a simple log4j jar file.
 	baseName := path.Base(fn)
 	if zipPattern.MatchString(baseName) {
@@ -124,6 +127,7 @@ func scan_file(fn string) {
 			if strings.Compare(f.Name, "META-INF/MANIFEST.MF") == 0 {
 				rc, err := f.Open()
 				if err == nil {
+					found_output = true
 					manifest, _ := ioutil.ReadAll(rc)
 					scan_release_version(string(manifest))
 					o := Log4JFound{}
@@ -164,6 +168,7 @@ func scan_file(fn string) {
 						if strings.Compare(sf.Name, "META-INF/MANIFEST.MF") == 0 {
 							src, err := sf.Open()
 							if err == nil {
+								found_output = true
 								manifest, _ := ioutil.ReadAll(src)
 								o := Log4JFound{}
 								o.Manifest = string(manifest)
@@ -214,6 +219,9 @@ func is_version_vulnerable(ver string) bool {
 func match_map(input string, expr *regexp.Regexp) map[string]string {
 	match := expr.FindStringSubmatch(input)
 	result := make(map[string]string)
+	if len(input) == 0 {
+		return result
+	}
 	for i, name := range expr.SubexpNames() {
 		if i != 0 && name != "" {
 			result[name] = match[i]
@@ -224,7 +232,11 @@ func match_map(input string, expr *regexp.Regexp) map[string]string {
 
 func scan_release_version(mf string) string {
 	ver_reg := regexp.MustCompile(".+ReleaseVersion\\: (?P<version>\\S+).+")
+	old_ver_reg := regexp.MustCompile(".+Implementation\\-Version\\: (?P<version>\\\\S+).+")
 	m := match_map(ver_reg.FindString(mf), ver_reg)
+	if len(m) == 0 {
+		m = match_map(old_ver_reg.FindString(mf), old_ver_reg)
+	}
 	v := m["version"]
 	return v
 }
