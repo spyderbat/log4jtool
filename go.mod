@@ -3,8 +3,7 @@ module log4j
 go 1.17
 
 require (
-	github.com/mcuadros/go-version v0.0.0-20190830083331-035f6764e8d2
-	github.com/pkg/profile v1.6.0
+	github.com/hashicorp/go-version v1.3.0
 	github.com/spyderbat/libbat v0.0.0-20211208181831-dc4c03621a84
 )
 
