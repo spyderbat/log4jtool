@@ -9,14 +9,14 @@ RLDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Build=$(BUILD) -X=main.Bui
 build: vendor
 	export GO111MODULE=on
 	cat scripts/version.template | sed 's/$${version}/$(VERSION)/g' > version.json
-	go build $(LDFLAGS) -o log4j cmd/*
-	CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o log4j.arm64 cmd/*
+	go build $(LDFLAGS) -o log4jtool cmd/*
+	CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc GOOS=linux GOARCH=arm64 go build $(LDFLAGS) -o log4jtool.arm64 cmd/*
 
 releasebuild: vendor
 	export GO111MODULE=on
 	cat scripts/version.template | sed 's/$${version}/$(VERSION)/g' > version.json
-	go build -trimpath $(RLDFLAGS) -o log4j cmd/*
-	CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc GOOS=linux GOARCH=arm64 go build -trimpath $(RLDFLAGS) -o log4j.arm64 cmd/*
+	go build -trimpath $(RLDFLAGS) -o log4jtool cmd/*
+	CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc GOOS=linux GOARCH=arm64 go build -trimpath $(RLDFLAGS) -o log4jtool.arm64 cmd/*
 
 
 vendor: 

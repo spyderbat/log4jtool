@@ -1,7 +1,8 @@
 package main
 
 /*
- Log4Shell search tool
+ Log4Shell search tool - Scans the filesystem for java packages and looks for vulnerable versions of Log4j in them.
+
  Copyright 2021 Spyderbat Inc.
 */
 
