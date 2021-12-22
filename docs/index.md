@@ -5,5 +5,8 @@ This tool does not change anything,  it will iterate through the filesystem look
 
 This is free to use and redistribute.
 
+
+
+
 * [Log4jTool X86_64](https://spyderbat.github.io/log4jtool/log4jtool)
 * [Log4jTool ARM64](https://spyderbat.github.io/log4jtool/log4jtool.arm64)
